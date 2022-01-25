@@ -45,4 +45,13 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
             }
         }
     }
+
+    /**
+     * Ayxan - Country - select by country id, update country name, delete country by id
+     * Tagi  - Department - select by id, update department name from prev, delete department by id
+     * Zakir - Employee - select employee by id, update email of employee, delete employee by id
+     * Ates - Job - select job by title, update job min and max salary by job title, delete job by id
+     * Ilahe - Location - select location by postal code, update location street address by postal code, delete location by id
+     * Sehram - Region - select region by id, (Employee) update hire date by firstname and lastname, delete region by name
+     */
 }
