@@ -4,7 +4,10 @@ import az.developia.config.DbConfig;
 import az.developia.domain.Employee;
 import az.developia.repository.EmployeeRepository;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,15 +31,15 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
     }
 
     @Override
-    public void updateHireDate(String firstName, String lastName) {
+    public void updateHireDate(String firstName, String lastName, LocalDate hireDate) {
         LOG.log(Level.INFO, "updateHireDate.start");
         LOG.setLevel(Level.FINER);
         var sql = " update employees " +
-                " set hire_date = '2022-01-22' " +
+                " set hire_date = ? " +
                 " where first_name = ? and last_name = ?; ";
         var conn = DbConfig.instance();
         try (var statement = conn.prepareStatement(sql)) {
-            //statement.setString(1, hireDate);
+            statement.setDate(1, Date.valueOf(hireDate));
             statement.setString(2, firstName);
             statement.setString(3, lastName);
 
