@@ -21,7 +21,7 @@ public class RegionRepositoryImpl implements RegionRepository {
                 from regions;
                 """;
         try (
-                var conn = DbConfig.getConnectionWithDriverManager();
+                var conn = DbConfig.instance();
                 var statement = conn.prepareStatement(sql);
                 var resultSet = statement.executeQuery();
         ) {

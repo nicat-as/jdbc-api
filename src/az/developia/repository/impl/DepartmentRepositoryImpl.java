@@ -20,7 +20,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
                 set department_name= ?
                 where department_id= ?;            
                 """;
-        var conn = DbConfig.getConnectionWithDriverManager();
+        var conn = DbConfig.instance();
         try (var statement = conn.prepareStatement(sql)) {
             statement.setString(1, departmentName);
             statement.setLong(2, id);
