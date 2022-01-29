@@ -4,10 +4,12 @@ import az.developia.config.DbConfig;
 import az.developia.domain.Region;
 import az.developia.repository.RegionRepository;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RegionRepositoryImpl implements RegionRepository {
@@ -38,20 +40,35 @@ public class RegionRepositoryImpl implements RegionRepository {
     }
 
     @Override
-    public List<Region> deleteByName() {
+    public boolean deleteByName(String name) {
         LOG.info("deleteByName.start");
-        var arr = new ArrayList<Region>();
-
+        boolean isDeleted = false;
+        var conn = DbConfig.instance();
+        var sql = " delete from regions where region_name = ?; ";
         try (
-                var conn = DbConfig.instance();
-                var statement = conn.createStatement();
+                var statement = conn.prepareStatement(sql);
         ) {
-            var sql = " delete from regions where region_name = 'Asia'; ";
-            statement.executeUpdate(sql);
+            statement.setString(1, name);
+            var affectedRow = statement.executeUpdate();
+            if (affectedRow > 0) {
+                isDeleted = true;
+            }
+            conn.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, "delete exception: ", e);
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         LOG.info("deleteByName.end");
-        return arr;
+        return isDeleted;
     }
 }

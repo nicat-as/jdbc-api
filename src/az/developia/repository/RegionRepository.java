@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface RegionRepository {
     Optional<Region> findById(long id);
 
-    List<Region> deleteByName();
+    boolean deleteByName(String name);
 }
