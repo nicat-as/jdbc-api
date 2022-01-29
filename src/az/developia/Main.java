@@ -22,8 +22,10 @@ public class Main {
 //        var updateHireDate = new EmployeeRepositoryImpl();
 //        updateHireDate.updateHireDate("Lex", "De Haan", LocalDate.of(2015, 1, 1));
 
-        var isDeleted = regionReport.deleteByName("Asia");
-        System.out.println(isDeleted);
+//        var isDeleted = regionReport.deleteByName("Asia");
+//        System.out.println(isDeleted);
+        var er = new EmployeeRepositoryImpl();
+        er.findById(102L).ifPresent(System.out::println);
 
     }
 }
