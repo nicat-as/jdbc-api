@@ -13,9 +13,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
     @Override
     public Employee save(Employee e) {
-        var sql = """
-                
-                """;
+        var sql = "  ";
         try (
                 var conn = DbConfig.instance();
                 var statement = conn.prepareStatement(sql);
@@ -28,4 +26,39 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
             return e;
         }
     }
+
+    @Override
+    public void updateHireDate(String firstName, String lastName) {
+        LOG.log(Level.INFO, "updateHireDate.start");
+        LOG.setLevel(Level.FINER);
+        var sql = " update employees " +
+                " set hire_date = '2022-01-22' " +
+                " where first_name = ? and last_name = ?; ";
+        var conn = DbConfig.instance();
+        try (var statement = conn.prepareStatement(sql)) {
+            //statement.setString(1, hireDate);
+            statement.setString(2, firstName);
+            statement.setString(3, lastName);
+
+            var affected = statement.executeUpdate();
+            LOG.log(Level.FINER, "affected: " + affected);
+
+            conn.commit();
+            LOG.log(Level.INFO, "updateHireDate.end");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

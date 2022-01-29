@@ -13,27 +13,45 @@ public class RegionRepositoryImpl implements RegionRepository {
     private static final Logger LOG = Logger.getLogger(RegionRepositoryImpl.class.getName());
 
     @Override
-    public List<Region> findAll() {
-        LOG.info("findAll.start");
+    public List<Region> findById(long id) {
+        LOG.info("findById.start");
         var arr = new ArrayList<Region>();
-        var sql = """
-                select *
-                from regions;
-                """;
+        var sql = " select * from regions r where region_id = ?; ";
         try (
                 var conn = DbConfig.instance();
                 var statement = conn.prepareStatement(sql);
-                var resultSet = statement.executeQuery();
         ) {
-            while (resultSet.next()) {
-                var id = resultSet.getLong("region_id");
-                var name = resultSet.getString("region_name");
-                arr.add(new Region(id, name));
+            statement.setLong(1, id);
+
+            try (var resultSet = statement.executeQuery();) {
+                while (resultSet.next()) {
+                    id = resultSet.getLong("region_id");
+                    var name = resultSet.getString("region_name");
+                    arr.add(new Region(id, name));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        LOG.info("findAll.end");
+        LOG.info("findById.end");
+        return arr;
+    }
+
+    @Override
+    public List<Region> deleteByName() {
+        LOG.info("deleteByName.start");
+        var arr = new ArrayList<Region>();
+
+        try (
+                var conn = DbConfig.instance();
+                var statement = conn.createStatement();
+        ) {
+            var sql = " delete from regions where region_name = 'Asia'; ";
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        LOG.info("deleteByName.end");
         return arr;
     }
 }
