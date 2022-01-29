@@ -7,16 +7,17 @@ import az.developia.repository.RegionRepository;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class RegionRepositoryImpl implements RegionRepository {
     private static final Logger LOG = Logger.getLogger(RegionRepositoryImpl.class.getName());
 
     @Override
-    public List<Region> findById(long id) {
+    public Optional<Region> findById(long id) {
         LOG.info("findById.start");
-        var arr = new ArrayList<Region>();
         var sql = " select * from regions r where region_id = ?; ";
+        Region region = null;
         try (
                 var conn = DbConfig.instance();
                 var statement = conn.prepareStatement(sql);
@@ -25,16 +26,15 @@ public class RegionRepositoryImpl implements RegionRepository {
 
             try (var resultSet = statement.executeQuery();) {
                 while (resultSet.next()) {
-                    id = resultSet.getLong("region_id");
                     var name = resultSet.getString("region_name");
-                    arr.add(new Region(id, name));
+                    region = new Region(id, name);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         LOG.info("findById.end");
-        return arr;
+        return Optional.ofNullable(region);
     }
 
     @Override
