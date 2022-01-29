@@ -14,7 +14,25 @@ public final class DbConfig {
     private static final String PASSWORD = "Hello123@";
     private static final String URL = "jdbc:postgresql://localhost:5432/hr";
 
-    public static Connection getConnectionWithDriverManager() {
+    public static Connection instance() {
+        return withDataSource();
+    }
+
+    public static Connection instance(Type type) {
+        switch (type) {
+            case DATA_SOURCE -> {
+                return withDataSource();
+            }
+            case DRIVER_MANAGER -> {
+                return withDriverManager();
+            }
+            default -> {
+                throw new RuntimeException("connection type is wrong");
+            }
+        }
+    }
+
+    private static Connection withDriverManager() {
         LOG.info("getConnectionWithDriverManager.start");
         try {
             var connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
@@ -28,7 +46,7 @@ public final class DbConfig {
 
     }
 
-    public static Connection getConnection() {
+    private static Connection withDataSource() {
         var dataSource = new PGSimpleDataSource();
         try {
             dataSource.setDatabaseName("hr");
@@ -41,5 +59,9 @@ public final class DbConfig {
         }
     }
 
+    public enum Type {
+        DRIVER_MANAGER,
+        DATA_SOURCE;
+    }
 
 }
