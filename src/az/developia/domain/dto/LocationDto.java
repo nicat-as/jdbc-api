@@ -1,25 +1,23 @@
-package az.developia.domain;
+package az.developia.domain.dto;
 
 import java.util.Objects;
 
-public class Location {
+public class LocationDto {
     private Long id;
     private String streetAddress;
     private String postalCode;
     private String city;
-    private String stateProvince;
-    private Country country;
 
-    public Location(Long id, String streetAddress, String postalCode, String city, String stateProvince, Country country) {
+
+    public LocationDto(Long id, String streetAddress, String postalCode, String city) {
         this.id = id;
         this.streetAddress = streetAddress;
         this.postalCode = postalCode;
         this.city = city;
-        this.stateProvince = stateProvince;
-        this.country = country;
+
     }
 
-    public Location() {
+    public LocationDto() {
     }
 
     public Long getId() {
@@ -54,44 +52,31 @@ public class Location {
         this.city = city;
     }
 
-    public String getStateProvince() {
-        return stateProvince;
-    }
-
-    public void setStateProvince(String stateProvince) {
-        this.stateProvince = stateProvince;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Location location = (Location) o;
-        return Objects.equals(id, location.id) && Objects.equals(streetAddress, location.streetAddress) && Objects.equals(postalCode, location.postalCode) && Objects.equals(city, location.city) && Objects.equals(stateProvince, location.stateProvince) && Objects.equals(country, location.country);
+        LocationDto that = (LocationDto) o;
+        return  Objects.equals(id, that.id) &&
+                Objects.equals(streetAddress, that.streetAddress) &&
+                Objects.equals(postalCode, that.postalCode) &&
+                Objects.equals(city, that.city);
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, streetAddress, postalCode, city, stateProvince, country);
+        return Objects.hash(id, streetAddress, postalCode, city);
     }
 
     @Override
     public String toString() {
-        return "Location{" +
+        return "LocationDto{" +
                 "id=" + id +
                 ", streetAddress='" + streetAddress + '\'' +
                 ", postalCode='" + postalCode + '\'' +
                 ", city='" + city + '\'' +
-                ", stateProvince='" + stateProvince + '\'' +
-                ", country=" + country +
                 '}';
     }
 }
