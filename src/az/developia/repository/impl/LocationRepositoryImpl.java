@@ -3,6 +3,7 @@ package az.developia.repository.impl;
 import az.developia.config.DbConfig;
 import az.developia.domain.dto.LocationDto;
 import az.developia.repository.LocationRepository;
+
 import java.sql.SQLException;
 
 import java.util.Optional;
@@ -42,14 +43,12 @@ public class LocationRepositoryImpl implements LocationRepository {
 
             }
             return Optional.of(locationDto);
+        } catch (SQLException e) {
+            System.out.println("---------------------------");
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-                 catch (SQLException e) {
-                System.out.println("---------------------------");
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-        }
-
+    }
 
 
     @Override
@@ -64,9 +63,9 @@ public class LocationRepositoryImpl implements LocationRepository {
                 """;
         var conn = DbConfig.instance();
 
-        try(var statement = conn.prepareStatement(sql)){
-        //    statement.setString(1, street_address);
-            statement.setString(1,"postalCode");
+        try (var statement = conn.prepareStatement(sql)) {
+            //    statement.setString(1, street_address);
+            statement.setString(1, postalCode);
 
             var affected = statement.executeUpdate();
             LOG.log(Level.INFO, "affected: " + affected);
@@ -74,18 +73,18 @@ public class LocationRepositoryImpl implements LocationRepository {
             conn.commit();
             LOG.log(Level.INFO, "updateStAddress.end");
 
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             try {
                 conn.rollback();
-            } catch (SQLException ex){
+            } catch (SQLException ex) {
                 ex.printStackTrace();
             }
 
         } finally {
             try {
                 conn.close();
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -103,27 +102,27 @@ public class LocationRepositoryImpl implements LocationRepository {
                 where location_id = ?
                 """;
 
-        try(
+        try (
                 var statement = conn.prepareStatement(sql);
 
-                ){
+        ) {
             statement.setLong(1, id);
             var affectedRow = statement.executeUpdate();
-            if(affectedRow > 0){
+            if (affectedRow > 0) {
                 isDeleted = true;
             }
             conn.commit();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             LOG.log(Level.SEVERE, "delete exception: ", e);
-            try{
+            try {
                 conn.rollback();
-            }catch (SQLException ex){
+            } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-        }finally {
+        } finally {
             try {
                 conn.close();
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
